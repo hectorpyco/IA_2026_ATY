@@ -1,46 +1,52 @@
-## Procedimiento de Inicio de Clase
+# Clase 1: Fundamentos y Anatomía de la Inteligencia Artificial
 
-Para que los alumnos empiecen a trabajar, los comandos diarios son:
+¡Bienvenidos a la cátedra! Tienen frente a ustedes una de las herramientas más potentes del mundo para el desarrollo de IA: laptops con arquitectura **NVIDIA Blackwell (RTX 5070 Ti)**. En este curso no solo aprenderemos teoría; vamos a ensuciarnos las manos con código y hardware real.
 
-1. `conda activate ia_fcyt`
-2. `jupyter notebook` (o abrir VS Code y seleccionar el kernel `ia_fcyt`).
+## 0. Preparación del Entorno
 
----
-Para empezar "despacito", vamos a establecer los cimientos del **Machine Learning (ML)**. No empezaremos con código complejo, sino con la **anatomía del dato**.
+Antes de empezar, debemos asegurarnos de que estamos trabajando en el lugar correcto. En su terminal (Anaconda Prompt), observen el texto que aparece al principio de la línea entre paréntesis:
 
----
+* **Si ven `(ia_fcyt)`:** Ya están dentro del entorno. No necesitan ejecutar nada más.
+* **Si ven `(base)` o nada:** Deben ejecutar: `conda activate ia_fcyt`.
 
-## 1. El Cambio de Paradigma
+> **¿Por qué?** El entorno `ia_fcyt` contiene las librerías específicas (PyTorch, CUDA 12.8) que permiten que su código "hable" directamente con los núcleos de la GPU.
 
-En la informática tradicional, tú programas las reglas. En ML, tú entregas los datos y el hardware (la GPU) deduce las reglas.
+Luego, inicien su entorno de trabajo:
 
-* **Programación Tradicional:** $Datos + Reglas = Salida$
-* **Machine Learning:** $Datos + Salidas = Reglas$
-
-### El Rol del Hardware (RTX 5070 Ti)
-
-¿Por qué necesitamos esta potencia para "aprender"? Porque el aprendizaje es, matemáticamente, una **optimización masiva**. El modelo realizará miles de millones de multiplicaciones de matrices para encontrar la "regla" que mejor se ajusta a tus datos. Tus núcleos **Tensor** están diseñados específicamente para eso.
+* Escriban `jupyter notebook` para abrir la interfaz en el navegador.
+* O abran **VS Code** y asegúrense de que el "Kernel" (esquina superior derecha) diga `ia_fcyt`.
 
 ---
 
-## 2. Anatomía de un Dataset
+## 1. El Cambio de Paradigma: Programación vs. Aprendizaje
 
-Un **Dataset** es una matriz de información. Para que la IA aprenda, debemos estructurarla correctamente.
+En las materias de programación que cursaron hasta ahora, ustedes escribían las reglas. En Inteligencia Artificial, el flujo cambia radicalmente:
 
-### Conceptos Clave:
+* **Programación Tradicional:** $Datos + Reglas \rightarrow Salida$. (Ejemplo: Un `if` que decide si un número es par).
+* **Machine Learning (ML):** $Datos + Salidas \rightarrow Reglas$. (Ejemplo: Le damos 10.000 fotos de piezas defectuosas y la IA deduce la regla para detectarlas).
 
-* **Muestras (Samples):** Son las filas. Cada fila es un evento único (una lectura de sensor, un registro de alumno).
-* **Características (Features - $X$):** Son las columnas de entrada. Lo que observamos (voltaje, temperatura, largo de un pétalo).
-* **Etiqueta (Target/Label - $y$):** Es lo que queremos predecir (¿El motor falló?, ¿Es una estafa?, ¿Qué tipo de planta es?).
+### El "Músculo" tras la lógica (RTX 5070 Ti)
 
-> **Nota para Electrónica:** Piensen en $X$ como las señales de entrada de un sistema y en $y$ como el estado de la salida.
-> **Nota para Informática:** Piensen en $X$ como los atributos de un objeto y en $y$ como su categoría.
+Aprender reglas a partir de datos es, en el fondo, un problema de **optimización matemática masiva**. Sus núcleos **Tensor** están diseñados para realizar billones de multiplicaciones de matrices por segundo. Lo que a una CPU le tomaría horas, a esta arquitectura le toma segundos.
 
 ---
 
-## 3. Práctica Inicial: Carga y Exploración (Jupyter)
+## 2. Anatomía de un Dataset (El Combustible)
 
-Pide a los alumnos que abran un **Jupyter Notebook** y ejecuten este bloque. Vamos a usar el dataset **Iris**, que aunque es clásico, es perfecto para entender la geometría de los datos.
+Un **Dataset** es una matriz de información. Para que la IA aprenda, los datos deben estar estructurados:
+
+* **Muestras (Samples):** Son las **filas**. Cada una es un evento único (una lectura de sensor, un registro).
+* **Características (Features - $X$):** Son las **columnas de entrada**. Lo que observamos (voltaje, frecuencia, dimensiones).
+* **Etiqueta (Target/Label - $y$):** Es la **salida** que queremos predecir (¿Es falla?, ¿Es normal?, ¿Qué categoría es?).
+
+> **Ing. Electrónicos:** Piensen en $X$ como señales de entrada y $y$ como el estado del sistema.
+> **Ing. Informáticos:** Piensen en $X$ como atributos de un objeto y $y$ como su clase en una DB.
+
+---
+
+## 3. Práctica Inicial: Exploración de Datos
+
+Abran un nuevo archivo `.ipynb` y ejecuten este bloque. Vamos a usar el dataset **Iris**, el "Hola Mundo" del ML, para entender la geometría de los datos.
 
 ```python
 import pandas as pd
@@ -52,51 +58,53 @@ df = pd.DataFrame(raw_data.data, columns=raw_data.feature_names)
 df['especie'] = raw_data.target
 
 # 2. Visualizar la "forma" de los datos
-print(f"Dimensiones del dataset: {df.shape}") # (Filas, Columnas)
-print("\nPrimeras 5 muestras:")
+print(f"Dimensiones del dataset: {df.shape}") # (Muestras, Características)
+print("\nPrimeras 5 muestras (X) y su etiqueta (y):")
 print(df.head())
 
 ```
 
-### El Concepto de "Tensor"
+### ¿Qué es un Tensor?
 
-Para que la GPU procese esto, eventualmente convertiremos estas tablas en **Tensores**. Un tensor es simplemente una matriz generalizada que puede vivir en la memoria de la placa de video.
-
----
-
-## 4. ¿Cómo se usa un Dataset adecuadamente?
-
-Aquí es donde aplicamos rigor de ingeniería. **Nunca** usamos todos los datos para entrenar a la IA.
-
-1. **Conjunto de Entrenamiento (Training):** Los datos con los que la IA estudia.
-2. **Conjunto de Prueba (Testing):** El examen final con datos que la IA nunca vio.
-
-**Regla de Oro:** Si la IA saca 100/100 en el entrenamiento pero falla en la prueba, no ha aprendido, solo ha memorizado (**Overfitting**).
+Verán que trabajamos con tablas de **Pandas**, pero la GPU no entiende de tablas. Para procesar esto en la RTX 5070 Ti, convertiremos estos datos en **Tensores**. Un tensor es simplemente una matriz multidimensional optimizada para vivir en la memoria de la placa de video (VRAM).
 
 ---
 
-## 5. Ejercicio de Nivelación: Visualización de Características
+## 4. Rigor de Ingeniería: ¿Cómo usamos los datos?
 
-Antes de que la GPU trabaje, el ingeniero debe "ver" los datos. Pídeles que ejecuten esto para ver cómo se relacionan las variables:
+**Nunca** usamos todos los datos para entrenar. Sería como darle a un alumno el examen resuelto para que "estudie": solo memorizaría las respuestas.
+
+1. **Training Set (Entrenamiento):** El 80% de los datos. La IA los usa para ajustar sus pesos.
+2. **Test Set (Prueba):** El 20% restante. Es el **examen final**. Son datos que la IA jamás ha visto.
+
+**Regla de Oro:** Si tu modelo tiene 99% de precisión en entrenamiento pero 50% en prueba, tienes **Overfitting** (sobreajuste). Tu IA memorizó, no aprendió a generalizar.
+
+---
+
+## 5. Visualización: Ver antes de Entrenar
+
+Un buen ingeniero siempre visualiza los datos antes de lanzar un modelo. Ejecuten esto para ver cómo se agrupan las especies de plantas según sus dimensiones:
 
 ```python
 import matplotlib.pyplot as plt
 
 # Graficamos: Largo del pétalo vs Ancho del pétalo
-plt.figure(figsize=(8, 5))
-plt.scatter(df.iloc[:, 2], df.iloc[:, 3], c=df['especie'], cmap='viridis')
+plt.figure(figsize=(10, 6))
+scatter = plt.scatter(df.iloc[:, 2], df.iloc[:, 3], c=df['especie'], cmap='viridis', edgecolors='k')
 plt.xlabel(raw_data.feature_names[2])
 plt.ylabel(raw_data.feature_names[3])
-plt.title("Visualización de Clústeres de Datos")
-plt.colorbar(label="Especie")
+plt.title("Visualización de Clústeres de Datos (Iris Dataset)")
+plt.colorbar(scatter, label="Especie (0, 1, 2)")
+plt.grid(True, linestyle='--', alpha=0.6)
 plt.show()
 
 ```
 
-### Pregunta para la clase:
+### Desafío para la clase:
 
-*Observando el gráfico:* ¿Creen que una máquina podría trazar una línea para separar los grupos de colores? **Esa línea es el modelo de IA que vamos a construir.**
+Observen el gráfico generado. Hay grupos que se separan fácilmente y otros que se solapan.
+**¿Podrían trazar una línea imaginaria que separe los grupos?** El algoritmo de IA que programaremos hará exactamente eso, pero en espacios de muchas más dimensiones.
 
 ---
 
-**¿Todos los alumnos logran ver el gráfico de puntos de colores en sus laptops?** Si es así, estamos listos para realizar la división técnica de los datos y preparar el primer entrenamiento real. ¿Te gustaría que procedamos con el código para la **partición de datos**?
+**¿Lograron generar el gráfico?** Si es así, guarden sus avances. En la siguiente sección del repo veremos cómo realizar la **partición técnica de datos** (`train_test_split`) de forma profesional. ¿Quieren que avancemos con el código para separar sus datos de entrenamiento y prueba?
