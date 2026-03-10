@@ -108,3 +108,70 @@ Observen el gráfico generado. Hay grupos que se separan fácilmente y otros que
 ---
 
 **¿Lograron generar el gráfico?** Si es así, guarden sus avances. En la siguiente sección del repo veremos cómo realizar la **partición técnica de datos** (`train_test_split`) de forma profesional. ¿Quieren que avancemos con el código para separar sus datos de entrenamiento y prueba?
+Aquí tienes la continuación para tu archivo `.md`. He integrado las explicaciones técnicas sobre el dataset, la lógica de los colores en la visualización y el procedimiento profesional para la partición de datos.
+
+---
+
+## 6. Entendiendo el Dataset Iris y la "Magia" de los Colores
+
+¿Por qué usamos estas flores en una clase de ingeniería? Porque representan el problema fundamental de la **Clasificación**.
+
+### El Dataset: Tres Especies, Cuatro Dimensiones
+
+El dataset contiene 150 muestras de tres especies: **Setosa** (0), **Versicolor** (1) y **Virginica** (2). Para cada una, medimos cuatro características (largo y ancho de sépalo y pétalo).
+
+### ¿Cómo generamos los colores en el gráfico anterior?
+
+En la línea `scatter = plt.scatter(..., c=df['especie'], cmap='viridis')`, ocurren dos procesos clave:
+
+1. **`c=df['especie']`**: Le asignamos a cada punto el valor numérico de su etiqueta (0, 1 o 2).
+2. **`cmap='viridis'`**: Es el **Colormap**. Es una matriz de colores que mapea números a una escala visual. El 0 se vuelve violeta, el 1 verde y el 2 amarillo.
+
+**Interpretación de Ingeniería:**
+Si observan su gráfico, verán que los puntos violetas (**Setosa**) están aislados. Decimos que son **linealmente separables**. Sin embargo, los verdes y amarillos se solapan. Aquí es donde la IA demuestra su valor: encontrando el límite óptimo donde el ojo humano duda.
+
+---
+
+## 7. Preparación para el Entrenamiento: Partición de Datos
+
+Como ingenieros, no podemos confiar en un modelo que "memoriza". Debemos garantizar que la IA pueda **generalizar** ante datos que nunca ha visto antes. Para ello, realizamos la **Partición Técnica**.
+
+Utilizaremos la regla del **80/20**:
+
+* **$X$ (Características):** Las dimensiones de la planta.
+* **$y$ (Etiqueta):** La especie.
+
+Ejecuten el siguiente bloque para preparar sus conjuntos de datos:
+
+```python
+from sklearn.model_selection import train_test_split
+
+# 1. Definimos nuestras variables de entrada (X) y salida (y)
+X = df.drop('especie', axis=1) # Todas las columnas menos la etiqueta
+y = df['especie']              # Solo la columna objetivo
+
+# 2. Realizamos la división técnica
+# test_size=0.2 separa el 20% para el examen final
+# random_state=42 asegura que todos obtengamos los mismos datos (reproducibilidad)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 3. Verificamos la distribución
+print(f"Muestras totales: {len(df)}")
+print(f"Muestras para Entrenamiento (Estudio): {len(X_train)}")
+print(f"Muestras para Test (Examen): {len(X_test)}")
+
+```
+
+### ¿Por qué `random_state=42`?
+
+En ingeniería, la **reproducibilidad** es ley. Si no fijamos una "semilla" aleatoria, cada vez que ejecuten el código los datos se mezclarán de forma distinta, y sus resultados no serán comparables. Usamos 42 por convención en la comunidad de IA, pero podría ser cualquier número.
+
+---
+
+## 8. El Concepto de "Garbage In, Garbage Out" (GIGO)
+
+Antes de pasar al entrenamiento en la siguiente sesión, recuerden este principio: **Si entra basura, sale basura.** La potencia de sus **RTX 5070 Ti** no sirve de nada si el dataset está mal etiquetado o tiene ruidos excesivos. La IA no es mágica; es un espejo de la calidad de sus datos.
+
+---
+
+**¿Ya tienen sus datos divididos y listos en la memoria de la laptop?** Si es así, guarden este Notebook. En la próxima sección vamos a definir nuestro primer **Modelo de Clasificación** y veremos cómo la GPU calcula la frontera de decisión automáticamente. ¿Les gustaría que prepare el código para entrenar su primer algoritmo de Machine Learning?
