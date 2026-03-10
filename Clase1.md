@@ -174,4 +174,4 @@ Antes de pasar al entrenamiento en la siguiente sesión, recuerden este principi
 
 ---
 
-**¿Ya tienen sus datos divididos y listos en la memoria de la laptop?** Si es así, guarden este Notebook. En la próxima sección vamos a definir nuestro primer **Modelo de Clasificación** y veremos cómo la GPU calcula la frontera de decisión automáticamente. ¿Les gustaría que prepare el código para entrenar su primer algoritmo de Machine Learning?
+**¿Ya tienen sus datos divididos y listos en la memoria de la laptop?** Si es así, guarden este Notebook. En la próxima sección vamos a definir nuestro primer **Modelo de Clasificación** y veremos cómo la GPU calcula la frontera de decisión automáticamente. 
