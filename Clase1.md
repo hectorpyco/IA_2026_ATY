@@ -369,5 +369,3 @@ Investiguen qué es la función de activación **ReLU** que usamos en el código
 
 ---
 
-**¿Todos lograron visualizar su Matriz de Confusión?** Si algún alumno tiene dudas sobre por qué su modelo se equivoca en ciertas flores, podemos volver al gráfico de dispersión inicial para comparar la geometría del error.
-
