@@ -61,4 +61,3 @@ Para que los alumnos empiecen a trabajar, los comandos diarios son:
 
 ---
 
-**¿Alguna laptop arrojó un error en la capacidad de cómputo (12, 0)?** Si todas están verificadas, puedo darte el primer bloque de código para que los alumnos carguen y analicen su primer **Dataset** de ingeniería.
