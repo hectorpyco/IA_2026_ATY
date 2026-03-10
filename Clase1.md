@@ -299,3 +299,75 @@ Si su precisión es superior al 90%, han construido un sistema capaz de clasific
 **¿Qué resultados obtuvieron en sus pantallas?** Observen la velocidad de las épocas: en estas laptops, el cálculo es casi instantáneo. En la siguiente clase, veremos cómo este mismo flujo se aplica a imágenes reales y señales complejas, donde la **RTX 5070 Ti** realmente demostrará su superioridad frente a cualquier CPU.
 
 
+---
+
+## 13. Interpretación de Resultados: ¿Qué aprendió la IA?
+
+Tener una precisión del 90% o 100% es excelente, pero como ingenieros no nos basta con un número. Queremos saber **por qué** y **dónde** falla el sistema. Para esto usamos una herramienta fundamental: la **Matriz de Confusión**.
+
+### ¿Qué es la Matriz de Confusión?
+
+Es una tabla que muestra los aciertos y errores del modelo comparando la **clase real** frente a la **predicción**.
+
+* La diagonal principal muestra los aciertos.
+* Los valores fuera de la diagonal nos dicen exactamente qué especie se está confundiendo con cuál.
+
+Ejecuten este bloque para generar el reporte de ingeniería:
+
+```python
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
+
+# 1. Convertir las predicciones finales a formato legible por CPU
+y_pred = predicted_classes.cpu().numpy()
+y_true = y_test_t.cpu().numpy()
+
+# 2. Generar la matriz
+cm = confusion_matrix(y_true, y_pred)
+
+# 3. Graficar
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=raw_data.target_names, 
+            yticklabels=raw_data.target_names)
+plt.xlabel('Predicción de la IA')
+plt.ylabel('Clase Real (Verdad)')
+plt.title('Matriz de Confusión: Evaluación de Desempeño')
+plt.show()
+
+print("\nReporte Detallado de Métricas:")
+print(classification_report(y_true, y_pred, target_names=raw_data.target_names))
+
+```
+
+---
+
+## 14. Análisis de la Clase: El Costo del Error
+
+Observen su matriz de confusión. Probablemente la especie **Setosa** tiene 0 errores (recuerden que en el gráfico inicial estaba muy separada). Sin embargo, es posible que la IA haya confundido alguna **Versicolor** con **Virginica**.
+
+**Pregunta para debate técnico:**
+En un sistema de clasificación de piezas defectuosas en una fábrica, ¿qué es más costoso: dejar pasar una pieza rota (Falso Negativo) o descartar una pieza buena (Falso Positivo)?
+La IA nos da la probabilidad, pero el ingeniero define el **umbral de tolerancia**.
+
+---
+
+## 15. Conclusión de la Clase 1
+
+Hoy han logrado cerrar el ciclo completo de un ingeniero en IA:
+
+1. **Configuración de Hardware:** Sincronizaron núcleos Blackwell con PyTorch.
+2. **Gestión de Datos:** Cargaron, visualizaron y dividieron un dataset profesional.
+3. **Arquitectura:** Definieron una red neuronal en la GPU.
+4. **Entrenamiento:** Ejecutaron optimización matricial masiva en `cuda:0`.
+5. **Evaluación:** Auditaron los resultados con métricas estadísticas.
+
+---
+
+**Tarea para la casa (Asincrónica):**
+Investiguen qué es la función de activación **ReLU** que usamos en el código (`nn.ReLU()`). ¿Por qué no podemos usar simplemente funciones lineales en una red neuronal? Lo discutiremos al iniciar la Clase 2.
+
+---
+
+**¿Todos lograron visualizar su Matriz de Confusión?** Si algún alumno tiene dudas sobre por qué su modelo se equivoca en ciertas flores, podemos volver al gráfico de dispersión inicial para comparar la geometría del error.
+
