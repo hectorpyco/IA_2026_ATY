@@ -175,3 +175,127 @@ Antes de pasar al entrenamiento en la siguiente sesión, recuerden este principi
 ---
 
 **¿Ya tienen sus datos divididos y listos en la memoria de la laptop?** Si es así, guarden este Notebook. En la próxima sección vamos a definir nuestro primer **Modelo de Clasificación** y veremos cómo la GPU calcula la frontera de decisión automáticamente. 
+
+---
+
+En esta sección, daremos el salto cualitativo de usar solo la CPU para manipular tablas a utilizar los núcleos **Tensor** de la **RTX 5070 Ti** para entrenar nuestro primer modelo de clasificación.
+
+---
+
+## 9. El Modelo: Del Dato a la Decisión
+
+Hasta ahora solo hemos cargado y visualizado datos. Ahora vamos a construir un **Modelo**. En Machine Learning, un modelo es una función matemática cuyos parámetros se ajustan automáticamente para encontrar patrones.
+
+Para aprovechar la potencia de estas laptops, no usaremos algoritmos estadísticos simples de CPU. Vamos a crear una **Red Neuronal Simple (Perceptrón Multicapa)** utilizando **PyTorch**.
+
+### El Salto al Hardware: Tensores y CUDA
+
+Para que la GPU procese nuestros datos, debemos realizar una conversión crítica: de **DataFrames de Pandas** (CPU) a **Tensores de PyTorch** (GPU).
+
+Ejecuten este bloque para preparar los datos en la memoria de la placa de video:
+
+```python
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# 1. Convertir datos de Pandas/Numpy a Tensores de PyTorch
+# Usamos float32 porque es el estándar para redes neuronales
+X_train_t = torch.FloatTensor(X_train.values).to("cuda")
+X_test_t = torch.FloatTensor(X_test.values).to("cuda")
+y_train_t = torch.LongTensor(y_train.values).to("cuda")
+y_test_t = torch.LongTensor(y_test.values).to("cuda")
+
+print(f"Datos movidos a la GPU: {X_train_t.device}")
+
+```
+
+---
+
+## 10. Arquitectura de nuestra Primera Red Neuronal
+
+Vamos a diseñar un cerebro artificial básico. Para el problema de las flores Iris, nuestra red tendrá:
+
+1. **Capa de Entrada:** 4 neuronas (una por cada característica: largo/ancho de pétalo y sépalo).
+2. **Capas Ocultas:** Donde ocurre el procesamiento matemático.
+3. **Capa de Salida:** 3 neuronas (una por cada especie de flor).
+
+Ejecuten la definición de la arquitectura:
+
+```python
+class RedNeuronalSimple(nn.Module):
+    def __init__(self):
+        super(RedNeuronalSimple, self).__init__()
+        # Definimos las capas: Entrada (4) -> Oculta (16) -> Salida (3)
+        self.capa_oculta = nn.Linear(4, 16)
+        self.capa_salida = nn.Linear(16, 3)
+        self.relu = nn.ReLU() # Función de activación (no linealidad)
+
+    def forward(self, x):
+        x = self.relu(self.capa_oculta(x))
+        x = self.capa_salida(x)
+        return x
+
+# Instanciamos el modelo y lo enviamos a la RTX 5070 Ti
+modelo = RedNeuronalSimple().to("cuda")
+print(modelo)
+
+```
+
+---
+
+## 11. El Ciclo de Entrenamiento (The Training Loop)
+
+Aquí es donde "sacamos jugo" al hardware. El entrenamiento consiste en pasar los datos miles de veces por la red (**Épocas**). En cada pasada, la GPU calcula el error y ajusta los pesos de la red para reducir ese error.
+
+```python
+# 1. Definir función de error y optimizador
+criterio = nn.CrossEntropyLoss()
+optimizador = optim.Adam(modelo.parameters(), lr=0.01)
+
+# 2. Bucle de entrenamiento
+epochs = 100
+for epoch in range(epochs):
+    # Forward pass: la IA intenta predecir
+    outputs = modelo(X_train_t)
+    loss = criterio(outputs, y_train_t)
+
+    # Backward pass: la GPU calcula cómo mejorar
+    optimizador.zero_grad()
+    loss.backward()
+    optimizador.step()
+
+    if (epoch + 1) % 10 == 0:
+        print(f'Época [{epoch+1}/{epochs}], Error: {loss.item():.4f}')
+
+```
+
+---
+
+## 12. Evaluación Final: El Examen de la IA
+
+Es hora de usar nuestro **Test Set** (el 20% de datos que la IA nunca vio). Vamos a verificar qué tan asertiva es nuestra ingeniería.
+
+```python
+modelo.eval() # Modo evaluación
+with torch.no_grad():
+    predicciones = modelo(X_test_t)
+    _, predicted_classes = torch.max(predicciones, 1)
+    
+    # Calcular precisión
+    correctos = (predicted_classes == y_test_t).sum().item()
+    precision = correctos / len(y_test_t)
+
+print(f"\nResultado del Examen Final: {precision * 100:.2f}% de precisión")
+
+```
+
+### Análisis para la clase:
+
+Si su precisión es superior al 90%, han construido un sistema capaz de clasificar especies biológicas con mayor velocidad y consistencia que un humano, ejecutado íntegramente en hardware local de última generación.
+
+---
+
+**¿Qué resultados obtuvieron en sus pantallas?** Observen la velocidad de las épocas: en estas laptops, el cálculo es casi instantáneo. En la siguiente clase, veremos cómo este mismo flujo se aplica a imágenes reales y señales complejas, donde la **RTX 5070 Ti** realmente demostrará su superioridad frente a cualquier CPU.
+
+
