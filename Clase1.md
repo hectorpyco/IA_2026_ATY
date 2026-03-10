@@ -1,3 +1,11 @@
+## Procedimiento de Inicio de Clase
+
+Para que los alumnos empiecen a trabajar, los comandos diarios son:
+
+1. `conda activate ia_fcyt`
+2. `jupyter notebook` (o abrir VS Code y seleccionar el kernel `ia_fcyt`).
+
+---
 Para empezar "despacito", vamos a establecer los cimientos del **Machine Learning (ML)**. No empezaremos con código complejo, sino con la **anatomía del dato**.
 
 ---
