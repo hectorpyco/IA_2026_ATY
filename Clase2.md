@@ -1,4 +1,4 @@
-# Clase 1: Fundamentos y Anatomía de la Inteligencia Artificial
+# Clase 2: Fundamentos y Anatomía de la Inteligencia Artificial
 
 ¡Bienvenidos a la cátedra! Tienen frente a ustedes una de las herramientas más potentes del mundo para el desarrollo de IA: laptops con arquitectura **NVIDIA Blackwell (RTX 5070 Ti)**. En este curso no solo aprenderemos teoría; vamos a ensuciarnos las manos con código y hardware real.
 
