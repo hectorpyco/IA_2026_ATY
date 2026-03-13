@@ -31,7 +31,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 Instala el stack necesario para el análisis de señales y procesamiento de datos.
 
 ```bash
-pip install numpy pandas matplotlib scikit-learn jupyter notebook
+pip install numpy pandas matplotlib scikit-learn jupyter notebook seaborn
 
 ```
 
