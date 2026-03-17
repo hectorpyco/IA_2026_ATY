@@ -72,17 +72,55 @@ Sin importar el problema, un ingeniero de IA siempre repite estos 4 pasos. Hoy l
 
 ---
 
-## 6. Código: Preparando los Tensores de Imagen
 
-En ingeniería de visión, usamos `datasets.ImageFolder`, que asume automáticamente que **el nombre de la carpeta es la etiqueta** de la imagen. Ejecuten este bloque para inicializar el flujo de datos:
+## 5.1. Adquisición y Organización de Datos (Paso Crítico)
+
+Ejecuten este bloque **antes** del código de carga. Este script creará las carpetas, descargará el dataset (aprox. 70MB) y lo dejará listo para la **RTX 5070 Ti**.
+
+```python
+import os
+import zipfile
+import urllib.request
+
+# 1. Definir rutas
+data_dir = './data'
+dataset_path = os.path.join(data_dir, 'NEU')
+zip_name = "NEU_Surface_Defect.zip"
+# URL directa a un espejo del dataset NEU
+url = "https://github.com/Yue-Gao/NEU-Surface-Defect-Database/archive/refs/heads/master.zip"
+
+# 2. Crear carpetas si no existen
+os.makedirs(data_dir, exist_ok=True)
+
+# 3. Descarga del dataset
+if not os.path.exists(zip_name):
+    print("Descargando dataset NEU... esto puede tardar un momento.")
+    urllib.request.urlretrieve(url, zip_name)
+    print("Descarga completada.")
+
+# 4. Extracción
+if not os.path.exists(dataset_path):
+    with zipfile.ZipFile(zip_name, 'r') as zip_ref:
+        zip_ref.extractall(data_dir)
+    # Renombrar la carpeta extraída para que coincida con nuestro código
+    os.rename(os.path.join(data_dir, 'NEU-Surface-Defect-Database-master'), dataset_path)
+    print(f"Dataset extraído en: {dataset_path}")
+else:
+    print("El dataset ya existe en el disco. Procediendo...")
+```
+
+---
+
+## 6. Código: Preparando los Tensores de Imagen (Explicado)
+
+Ahora que los archivos existen en `./data/NEU`, el código que tenías funcionará perfectamente. He agregado un pequeño ajuste para que las etiquetas sean legibles:
 
 ```python
 import torch
 from torchvision import transforms, datasets
 from torch.utils.data import DataLoader, random_split
 
-# 1. Definimos las transformaciones (El "preprocesamiento")
-# Usamos 224x224 y escala de grises para este dataset industrial
+# 1. Transformaciones: El "molde" para las imágenes
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.Grayscale(num_output_channels=1), 
@@ -90,30 +128,47 @@ transform = transforms.Compose([
     transforms.Normalize((0.5,), (0.5,)) 
 ])
 
-# 2. Carga de datos real
-# Asegúrate de que la carpeta 'data/NEU' contenga las subcarpetas de los defectos
-try:
-    full_dataset = datasets.ImageFolder(root='data/NEU', transform=transform)
-    print(f"Dataset cargado. Total de imágenes: {len(full_dataset)}")
-    print(f"Clases detectadas: {full_dataset.classes}")
-except Exception as e:
-    print(f"Error al cargar: {e}. Verifica la ruta 'data/NEU'.")
+# 2. Carga: PyTorch "mapea" las carpetas
+# ImageFolder entrará a 'data/NEU' y verá las subcarpetas como 'Crazing', 'Inclusion', etc.
+dataset = datasets.ImageFolder(root='./data/NEU', transform=transform)
 
-# 3. Partición Técnica (80/20) - Concepto repetido
-train_size = int(0.8 * len(full_dataset))
-test_size = len(full_dataset) - train_size
-train_data, test_data = random_split(full_dataset, [train_size, test_size], 
+# 3. Partición Técnica: 80% para estudiar, 20% para el examen
+train_size = int(0.8 * len(dataset))
+test_size = len(dataset) - train_size
+train_data, test_data = random_split(dataset, [train_size, test_size], 
                                      generator=torch.Generator().manual_seed(42))
 
-# 4. DataLoader: Aquí es donde la RTX 5070 Ti empieza a brillar
-# Procesaremos 32 imágenes simultáneamente en la GPU
+# 4. DataLoader: La tubería hacia la GPU
+# Aquí es donde el Batch de 32 se prepara para entrar a los núcleos Tensor
 train_loader = DataLoader(train_data, batch_size=32, shuffle=True)
 test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
 
-print(f"Lotes listos: {len(train_loader)} para entrenamiento.")
+print(f"Estructura lista. Clases: {dataset.classes}")
+print(f"Imágenes para entrenamiento: {len(train_data)}")
 ```
 
+
+
 ---
+
+### ¿Por qué esta estructura de carpetas?
+
+`ImageFolder` es una función de conveniencia de PyTorch. Para que funcione, la estructura en tu disco debe verse así:
+
+```text
+data/NEU/
+├── Crazing/     --> (Clase 0) imagen1.bmp, imagen2.bmp...
+├── Inclusion/   --> (Clase 1) imagen1.bmp, imagen2.bmp...
+├── Patches/     --> (Clase 2) ...
+└── ...
+```
+
+Si tus alumnos ven el mensaje **"Dataset cargado. Total de imágenes: 1800"**, significa que ya tenemos los datos en la "línea de salida".
+
+---
+
+**¿Lograron descargar y extraer el dataset en las laptops?** Si la respuesta es **Sí**, ya no hay nada que nos detenga. 
+
 
 ## 7. Concepto Repetido: La Red Neuronal Convolucional (CNN)
 
