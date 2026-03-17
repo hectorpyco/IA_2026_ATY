@@ -2,10 +2,6 @@ Para esta **Clase 3**, el objetivo es que el alumno entienda que, aunque cambiam
 
 ---
 
-Esta es la versión ampliada de la **Clase 3**. He integrado los detalles técnicos del dataset, su origen académico y la explicación matemática de cómo la IA "ve" las imágenes a través de tensores, manteniendo el nivel profesional requerido para estudiantes de 5to año de Ingeniería.
-
------
-
 # Clase 3: Visión Artificial e Inspección Industrial
 
 En la clase anterior usamos un "cañón para matar una mosca" con el dataset Iris. Hoy, finalmente le daremos a nuestra arquitectura **NVIDIA Blackwell (RTX 5070 Ti)** un desafío a su altura. Pasaremos de datos tabulares (números en tablas) a **datos no estructurados**: píxeles organizados en tensores.
