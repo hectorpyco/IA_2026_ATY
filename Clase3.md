@@ -228,4 +228,183 @@ mostrar_lote(train_loader)
 
 **¿Lograron visualizar la grilla de láminas de acero en sus notebooks?** Si la visualización es correcta, el "pipeline" de datos está listo.
 
-¿Te parece si ahora pasamos a definir la **Arquitectura CNN Clase 3**, diseñada para extraer el máximo provecho de los núcleos Tensor de sus laptops?
+Excelente, Héctor. El documento tiene una estructura de ingeniería impecable. Ahora que los alumnos ya "ven" los datos, el siguiente paso lógico es construir el "cerebro" que los procesará.
+
+Aquí tienes los puntos **10** (Definición de la arquitectura) y **11** (El ciclo de entrenamiento), listos para que los agregues a tu archivo `.md`.
+
+---
+
+## 10. Construcción del "Cerebro": Arquitectura CNN Industrial
+
+Vamos a traducir el diagrama de la **CNN** a código real. Usaremos dos bloques convolucionales seguidos de una etapa de clasificación. Noten cómo cada capa tiene una función específica en la detección de fallas.
+
+```python
+import torch.nn as nn
+import torch.nn.functional as F
+
+class CNN_Industrial(nn.Module):
+    def __init__(self):
+        super(CNN_Industrial, self).__init__()
+        
+        # Bloque 1: Detector de bordes y texturas simples
+        # Entrada: 1 canal (gris), Salida: 16 mapas de rasgos
+        self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
+        self.pool = nn.MaxPool2d(2, 2) # Reduce el tamaño a la mitad (112x112)
+        
+        # Bloque 2: Detector de patrones complejos (grietas, manchas)
+        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
+        # Después del 2do pool, la imagen queda en 56x56
+        
+        # Etapa de Clasificación (Capas Densas)
+        # 32 mapas de 56x56 píxeles = 100,352 entradas
+        self.fc1 = nn.Linear(32 * 56 * 56, 128)
+        self.fc2 = nn.Linear(128, 6) # 6 neuronas de salida (una por defecto)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        
+        # Aplanamos el tensor para entrar a las capas densas
+        x = x.view(-1, 32 * 56 * 56)
+        
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+# Instanciamos y movemos a la RTX 5070 Ti (cuda:0)
+modelo = CNN_Industrial().to("cuda")
+print(modelo)
+```
+
+---
+
+## 11. Entrenamiento de Alto Rendimiento: Sacando jugo a la VRAM
+
+Aquí es donde el hardware de sus laptops marca la diferencia. Ejecutaremos el ciclo de entrenamiento enviando cada lote de imágenes directamente a los **Núcleos Tensor**.
+
+**Instrucción:** Mientras ejecutan este bloque, mantengan abierto el Administrador de Tareas para observar el pico de consumo de energía y memoria de la GPU.
+
+```python
+import torch.optim as optim
+
+# 1. Definimos la "Regla de Evaluación" (Loss) y el "Optimizador"
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(modelo.parameters(), lr=0.001)
+
+# 2. Bucle de Entrenamiento
+epochs = 5
+print(f"Iniciando entrenamiento en: {torch.cuda.get_device_name(0)}")
+
+for epoch in range(epochs):
+    running_loss = 0.0
+    for i, data in enumerate(train_loader, 0):
+        # TRANSFERENCIA: Movemos imágenes y etiquetas a la GPU
+        inputs, labels = data[0].to("cuda"), data[1].to("cuda")
+
+        # Limpiar gradientes
+        optimizer.zero_grad()
+
+        # Forward + Backward + Optimize
+        outputs = modelo(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+
+        running_loss += loss.item()
+    
+    print(f"Época {epoch + 1} - Error promedio: {running_loss / len(train_loader):.4f}")
+
+print("Entrenamiento finalizado.")
+```
+
+---
+
+## 12. Análisis de Resultados: ¿Es confiable el sistema?
+
+Una vez que el modelo "estudió", debemos evaluar su precisión con el **Test Set**. No olviden que en ingeniería industrial, un error puede ser catastrófico.
+
+```python
+correct = 0
+total = 0
+modelo.eval() # Modo evaluación (apaga capas de entrenamiento)
+
+with torch.no_grad():
+    for data in test_loader:
+        images, labels = data[0].to("cuda"), data[1].to("cuda")
+        outputs = modelo(images)
+        _, predicted = torch.max(outputs.data, 1)
+        total += labels.size(0)
+        correct += (predicted == labels).sum().item()
+
+print(f'Precisión en las {total} imágenes de prueba: {100 * correct / total:.2f}%')
+```
+
+---
+
+**¿Qué porcentaje de precisión obtuvieron?** Dada la potencia de la RTX 5070 Ti, el entrenamiento debería ser sumamente rápido. 
+
+---
+
+## 13. Auditoría de Ingeniería: Matriz de Confusión
+
+Un 90% o 95% de precisión suena bien, pero en una línea de producción, **no todos los errores valen lo mismo**. Confundir un rasguño superficial (*Scratch*) con una grieta estructural (*Crazing*) puede detener una fábrica innecesariamente o, peor aún, dejar pasar una pieza peligrosa.
+
+Ejecuten este bloque para ver dónde "duda" su modelo:
+
+```python
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+
+modelo.eval()
+y_pred = []
+y_true = []
+
+with torch.no_grad():
+    for images, labels in test_loader:
+        outputs = modelo(images.to("cuda"))
+        _, predicted = torch.max(outputs, 1)
+        y_pred.extend(predicted.cpu().numpy())
+        y_true.extend(labels.cpu().numpy())
+
+# Generar y graficar la matriz
+cm = confusion_matrix(y_true, y_pred)
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Greens',
+            xticklabels=dataset.classes, yticklabels=dataset.classes)
+plt.xlabel('Predicción de la IA')
+plt.ylabel('Defecto Real')
+plt.title('Matriz de Confusión Industrial')
+plt.show()
+```
+
+---
+
+## 14. Reflexión Final: El Rol del Ingeniero en la Era de la IA
+
+Hoy han visto cómo la arquitectura **NVIDIA Blackwell** procesa miles de imágenes en segundos. Sin embargo, la potencia sin control no sirve de nada. 
+
+Como ingenieros de la **FCyT**, su trabajo no es solo escribir `modelo.train()`. Su valor reside en:
+1.  **Entender los Datos:** Saber que si la iluminación en la fábrica cambia, el modelo puede fallar.
+2.  **Interpretar el Error:** Saber que un Falso Negativo en una grieta es un riesgo inaceptable.
+3.  **Desplegar Soluciones:** Una IA que solo vive en un Jupyter Notebook no le sirve a la industria. Necesitamos interfaces que el operario pueda usar.
+
+
+
+---
+
+## 15. Tarea: Del Notebook a la Aplicación Real
+
+El desafío para la próxima clase es convertir este modelo en una herramienta funcional. 
+
+**Consigna:** Desarrollar un script o pequeña interfaz (pueden usar librerías como `Gradio`, `Tkinter` o simplemente una función de carga de archivos en Python) que permita:
+1.  **Cargar una imagen externa** (una que no esté en el dataset original).
+2.  **Preprocesarla** (llevarla a 224x224 y escala de grises).
+3.  **Pasarla por el modelo** entrenado hoy.
+4.  **Mostrar en pantalla la predicción:** "El sistema detecta: [Tipo de Defecto] con un X% de confianza".
+
+**Pista técnica:** Para predecir una sola imagen, recuerden que PyTorch espera un lote. Deberán usar `imagen.unsqueeze(0)` para convertir su imagen de $[1, 224, 224]$ a un "lote de uno" $[1, 1, 224, 224]$.
+
+---
+
+**¿Todos tienen su precisión final anotada?** Guarden su modelo con `torch.save(modelo.state_dict(), 'modelo_neu.pth')` para poder usarlo en su tarea sin tener que re-entrenar.
+
