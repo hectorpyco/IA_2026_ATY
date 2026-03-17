@@ -40,16 +40,18 @@ Este dataset fue desarrollado por el **Laboratorio de Automatización de la Univ
 | **RS** | *Rolled-in Scale* (Escama laminada) | Residuos de óxido comprimidos en el metal. |
 | **Sc** | *Scratches* (Arañazos) | Líneas longitudinales por fricción mecánica. |
 
------
 
-## 3\. Recursos y Documentación
+---
+
+## 3. Recursos y Documentación
 
 Para profundizar en la naturaleza de estos datos y cómo han sido utilizados en el estado del arte (SOTA), pueden consultar los siguientes enlaces:
 
-  * **Repositorio en Kaggle:** [NEU Surface Defect Database]([(https://www.kaggle.com/datasets/kaustubhdikshit/neu-surface-defect-database)] (Fuente común para acceso rápido).
-  * **Paper de referencia:** [vía IEEE Xplore]((https://ieeexplore.ieee.org/document/11267867)) para entender la metodología original de captura.
+* **Repositorio en Kaggle:** [NEU Surface Defect Database](https://www.kaggle.com/datasets/kaustubhdikshit/neu-surface-defect-database) (Fuente común para acceso rápido).
+* **Paper de referencia:** [vía IEEE Xplore](https://ieeexplore.ieee.org/document/11267867) para entender la metodología original de captura.
 
------
+---
+
 
 ## 4\. Rigor de Ingeniería: Precisión vs. Seguridad
 
