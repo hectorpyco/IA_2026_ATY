@@ -113,7 +113,7 @@ else:
 
 ## 6. Código: Preparando los Tensores de Imagen (Explicado)
 
-Ahora que los archivos existen en `./data/NEU`, el código que tenías funcionará perfectamente. He agregado un pequeño ajuste para que las etiquetas sean legibles:
+Ahora que los archivos existen en `./data/NEU`, el código para que las etiquetas sean legibles:
 
 ```python
 import torch
@@ -181,8 +181,7 @@ Para imágenes, ya no usamos el Perceptrón simple de la clase anterior. Usamos 
 3.  **Totalmente Conectada:** Capas densas finales que clasifican el rasgo detectado en uno de los 6 defectos.
 
 
-
-[Image of convolutional neural network layers]
+[Image of convolutional neural network layers]](https://www.plainconcepts.com/wp-content/uploads/2024/11/Convolutional-Neural-Network-developers-neural-network.webp)
 
 
 ---
