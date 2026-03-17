@@ -24,7 +24,8 @@ Para esta cátedra utilizaremos el **NEU Surface Defect Database**, un estándar
 
 Este dataset fue desarrollado por el **Laboratorio de Automatización de la Universidad del Noreste (NEU)** en China. Su objetivo es proporcionar una base sólida para el entrenamiento de algoritmos de inspección automática en la industria del acero.
 
-  * **Publicación original:** *Bao, Y., et al. (2014). "A surface defect detection algorithm for hot-rolled steel strip based on classification of defect categories."*
+  * **Dataset Original (2014):** Bao, Y., et al. "A surface defect detection algorithm for hot-rolled steel strip...". Es la fuente primaria de las imágenes que procesamos hoy.
+  * **Estado del Arte (2025-2026):** El dataset sigue siendo el estándar de oro en la industria, siendo utilizado en las publicaciones más recientes de IEEE para validar algoritmos de Deep Learning de última generación.
   * **Contenido:** 1,800 imágenes en formato bitmap (.bmp).
   * **Resolución:** Cada imagen es de $200 \times 200$ píxeles.
   * **Clases:** 300 muestras por cada uno de los 6 tipos de defectos.
