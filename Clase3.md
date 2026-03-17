@@ -46,7 +46,7 @@ Este dataset fue desarrollado por el **Laboratorio de Automatización de la Univ
 
 Para profundizar en la naturaleza de estos datos y cómo han sido utilizados en el estado del arte (SOTA), pueden consultar los siguientes enlaces:
 
-  * **Repositorio en Kaggle:** [NEU Surface Defect Database]([https://www.google.com/search?q=https://www.kaggle.com/datasets/kaustubhb93/neu-surface-defect-database](https://www.kaggle.com/datasets/kaustubhdikshit/neu-surface-defect-database)) (Fuente común para acceso rápido).
+  * **Repositorio en Kaggle:** [NEU Surface Defect Database]([(https://www.kaggle.com/datasets/kaustubhdikshit/neu-surface-defect-database)] (Fuente común para acceso rápido).
   * **Paper de referencia:** [vía IEEE Xplore]([https://www.google.com/search?q=https://www.researchgate.net/publication/261350170_A_surface_defect_detection_algorithm_for_hot-rolled_steel_strip](https://ieeexplore.ieee.org/document/11267867)) para entender la metodología original de captura.
 
 -----
