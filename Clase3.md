@@ -46,8 +46,8 @@ Este dataset fue desarrollado por el **Laboratorio de Automatización de la Univ
 
 Para profundizar en la naturaleza de estos datos y cómo han sido utilizados en el estado del arte (SOTA), pueden consultar los siguientes enlaces:
 
-  * **Repositorio en Kaggle:** [NEU Surface Defect Database](https://www.google.com/search?q=https://www.kaggle.com/datasets/kaustubhb93/neu-surface-defect-database) (Fuente común para acceso rápido).
-  * **Paper de referencia:** [Acceso vía ResearchGate](https://www.google.com/search?q=https://www.researchgate.net/publication/261350170_A_surface_defect_detection_algorithm_for_hot-rolled_steel_strip) para entender la metodología original de captura.
+  * **Repositorio en Kaggle:** [NEU Surface Defect Database]([https://www.google.com/search?q=https://www.kaggle.com/datasets/kaustubhb93/neu-surface-defect-database](https://www.kaggle.com/datasets/kaustubhdikshit/neu-surface-defect-database)) (Fuente común para acceso rápido).
+  * **Paper de referencia:** [vía IEEE Xplore]([https://www.google.com/search?q=https://www.researchgate.net/publication/261350170_A_surface_defect_detection_algorithm_for_hot-rolled_steel_strip](https://ieeexplore.ieee.org/document/11267867)) para entender la metodología original de captura.
 
 -----
 
@@ -58,12 +58,6 @@ En la industria, la precisión no es solo un porcentaje. Un **Falso Negativo** (
 -----
 
 **¿Lograron identificar los 6 tipos de defectos en las imágenes de muestra?** Si es así, estamos listos para pasar a la siguiente sección: **Data Augmentation y Carga de Tensores**, donde prepararemos las imágenes para que entren en la memoria de la **RTX 5070 Ti**.
-
-
----
-Tenés toda la razón, se me cruzaron los cables con la numeración. Como ya tenés una base sólida hasta el **punto 4 (Rigor de Ingeniería)**, vamos a reordenar la secuencia lógica a partir de ahí para que el manual sea consistente. 
-
-Aquí tenés el material corregido, con la numeración continua y el código del **punto 6** totalmente funcional (descomentado) para que los alumnos puedan ejecutarlo sin errores.
 
 ---
 
