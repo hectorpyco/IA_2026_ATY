@@ -196,8 +196,45 @@ for epoch in range(epochs):
 ```
 
 ---
+## 4.5. Evaluación y Matriz de Confusión
+Este bloque calculará la precisión global y dibujará una matriz donde las filas son las clases reales y las columnas las predicciones.
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
 
-## 4.5. Inferencia (Prueba de Campo)
+# 1. Evaluación del modelo
+model.eval() # Modo evaluación (apaga dropout, etc.)
+all_preds = []
+all_labels = []
+
+with torch.no_grad():
+    for images, labels in test_loader:
+        images, labels = images.to(device), labels.to(device)
+        outputs = model(images)
+        _, preds = torch.max(outputs, 1)
+        
+        all_preds.extend(preds.cpu().numpy())
+        all_labels.extend(labels.cpu().numpy())
+
+# 2. Generar Matriz de Confusión
+cm = confusion_matrix(all_labels, all_preds)
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=train_set.classes, 
+            yticklabels=train_set.classes)
+plt.xlabel('Predicción del Modelo')
+plt.ylabel('Clase Real (Verdad)')
+plt.title('Matriz de Confusión - Defectos de Acero NEU')
+plt.show()
+
+# 3. Reporte de métricas
+print("\nReporte de Clasificación:\n")
+print(classification_report(all_labels, all_preds, target_names=train_set.classes))
+```
+---
+## 4.6. Inferencia (Prueba de Campo)
 Para cerrar, seleccionen cualquier imagen del set de validación para verificar la predicción del modelo.
 
 ```python
