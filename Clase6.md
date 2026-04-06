@@ -269,7 +269,9 @@ Como ingenieros de la FCyT, su trabajo no termina en el Jupyter Notebook. El éx
 
 Paso A: Guardar el modelo
 Al finalizar la clase, aseguren su trabajo guardando los pesos entrenados:
+```python
 torch.save(model.state_dict(), 'modelo_neu_clase6.pth')
+```
 
 Paso B: El Desafío Externo (Validación Real)
 Busquen en Google Imágenes o bases de datos metalúrgicas fotos de "Steel surface defects" que NO pertenezcan al dataset NEU.
