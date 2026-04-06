@@ -234,6 +234,9 @@ print("\nReporte de Clasificación:\n")
 print(classification_report(all_labels, all_preds, target_names=train_set.classes))
 ```
 ---
+# Análisis del Reporte de Clasificación
+Cuando ejecutes el classification_report, fíjate especialmente en el F1-Score. Es la métrica más balanceada para ingeniería, ya que penaliza tanto los falsos positivos (decir que hay un rasguño cuando no lo hay) como los falsos negativos (dejar pasar una grieta peligrosa como si el acero estuviera sano).
+---
 ## 4.6. Inferencia (Prueba de Campo)
 Para cerrar, seleccionen cualquier imagen del set de validación para verificar la predicción del modelo.
 
