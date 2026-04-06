@@ -88,7 +88,7 @@ if not os.path.exists(dataset_path):
         zip_ref.extractall(data_dir)
     
     # Ruta interna del ZIP generado por GitHub
-    source_folder = os.path.join(data_dir, 'IA_2026_ATY-main', 'NEU_Data', 'NEU-DET')
+    source_folder = os.path.join(data_dir, 'IA_2026_ATY-main', 'NEU_Data')
     
     if os.path.exists(source_folder):
         shutil.move(source_folder, dataset_path)
